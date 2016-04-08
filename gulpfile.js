@@ -3,7 +3,6 @@ var gulp = require('gulp');
 var rename = require('gulp-rename');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
-var wrap = require('gulp-wrap');
 var addsrc = require('gulp-add-src');
 var sourcemaps = require('gulp-sourcemaps');
 var gulpJsdoc2md = require('gulp-jsdoc-to-markdown');
@@ -16,7 +15,6 @@ gulp.task('build', function() {
   return gulp
     .src(['src/*.js'])
     .pipe(concat(OUTPUT_FILENAME))
-    .pipe(wrap('(function(){\r\n<%= contents %>\r\n})();'))
     .pipe(sourcemaps.init())
     .pipe(gulp.dest(DESTINATION_DIR))
     .pipe(rename(MINIFIED_FILENAME))
