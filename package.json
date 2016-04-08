@@ -1,7 +1,7 @@
 {
   "name": "schema-spec",
   "version": "0.1.0",
-  "description": "A JavaScript library for interpreting event key and character codes across browsers.",
+  "description": "A JavaScript library for defining object schemas and validating object against them.",
   "main": "dist/schema-spec.js",
   "scripts": {
     "build": "gulp",
