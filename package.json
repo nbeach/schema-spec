@@ -1,0 +1,41 @@
+{
+  "name": "schema-spec",
+  "version": "0.1.0",
+  "description": "A JavaScript library for interpreting event key and character codes across browsers.",
+  "main": "dist/schema-spec.js",
+  "scripts": {
+    "build": "gulp",
+    "build:watch": "gulp watch",
+    "test": "mocha --recursive",
+    "coverage": "istanbul cover _mocha",
+    "test:watch": "mocha --recursive -w -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/nbeach/schema-spec.git"
+  },
+  "author": "Nicholas Beach <nicholas.c.beach@gmail.com> (http://nicholasbeach.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nbeach/schema-spec/issues"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp": "^3.9.1",
+    "gulp-add-src": "^0.2.0",
+    "gulp-concat": "^2.6.0",
+    "gulp-jsdoc-to-markdown": "^1.2.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^1.6.0",
+    "gulp-uglify": "^1.5.3",
+    "gulp-wrap": "^0.11.0",
+    "istanbul": "^0.4.2",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.14",
+    "karma-coverage": "^0.5.5",
+    "karma-jasmine": "^0.3.6",
+    "karma-phantomjs-launcher": "^0.2.1",
+    "mocha": "^2.4.5"
+  }
+}
