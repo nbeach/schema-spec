@@ -441,12 +441,12 @@ describe("SchemaSpec", function() {
 
       describe('accepts arrays of conditions', function() {
 
-        it('and returns true when the array contains only values matching the provided conditions', function() {
+        it('and returns true when one set of conditions pass', function() {
           var result = spec.property('arrayA', is.either([alwaysPasses, alwaysPasses]).or([alwaysPasses, alwaysFails])).validate({});
           expect(result).to.equal(true);
         });
 
-        it('and returns false when the array contains at least one value not matching the provided conditions', function() {
+        it('and returns false when both sets of conditions fail', function() {
           var result = spec.property('arrayC', is.either([alwaysFails, alwaysPasses]).or([alwaysPasses, alwaysFails])).validate({});
           expect(result).to.equal(false);
         });
