@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/nbeach/schema-spec/issues"
   },
-  "keywords": [],
+  "keywords": ["validation", "schema", "specification", "object", "spec", "valid"],
   "devDependencies": {
     "chai": "^3.5.0",
     "gulp": "^3.9.1",
