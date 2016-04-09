@@ -1,7 +1,6 @@
 var expect = require('chai').expect;
 var SchemaSpec = require('../src/SchemaSpec');
-var is, are;
-are = is = SchemaSpec.conditions;
+var is = SchemaSpec.conditions;
 
 describe("SchemaSpec", function() {
   var alwaysFails, alwaysPasses;
@@ -125,7 +124,7 @@ describe("SchemaSpec", function() {
       obj.strings = obj.string = 'abc123';
       obj.booleans = obj.boolean = true;
       obj.arrays = obj.array = [1, 2, 3];
-      obj.objects = obj.object = { property: 1 } ;
+      obj.objects = obj.object = { string: 1 } ;
       obj.functions = obj.function = function(){};
     }
 
@@ -296,6 +295,55 @@ describe("SchemaSpec", function() {
 
     });
 
+
+
+    describe('schema returns', function() {
+      var parentObject, childASpec;
+
+      beforeEach(function() {
+        parentObject = {
+          childA: { string: 'abc123' },
+          childB: { number: 3.333 }
+        };
+
+        childASpec = new SchemaSpec().property('string', is.string);
+      });
+
+      it('true when the object matches the provided spec', function() {
+        var result = spec.property('childA', is.schema(childASpec)).validate(parentObject);
+        expect(result).to.equal(true);
+      });
+
+      it('false when the object does not match the provided spec', function() {
+        var result = spec.property('childB', is.schema(childASpec)).validate(parentObject);
+        expect(result).to.equal(false);
+      });
+
+    });
+
+
+    describe('arrayOf returns', function() {
+      var arrayObj;
+
+      beforeEach(function() {
+        arrayObj = {
+          arrayA: [1, 2, 3],
+          arrayB: [1, '2', 3]
+        };
+
+      });
+
+      it('true when the array contains only values matching the provided condition', function() {
+        var result = spec.property('arrayA', is.arrayOf(is.number)).validate(arrayObj);
+        expect(result).to.equal(true);
+      });
+
+      it('false when the array contains at least one value not matching the provided condition', function() {
+        var result = spec.property('arrayB', is.arrayOf(is.number)).validate(arrayObj);
+        expect(result).to.equal(false);
+      });
+
+    });
 
 
   });

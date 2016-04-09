@@ -113,11 +113,25 @@
 		module.max.length = function(maxLength) { return function(value) { return module.not.undefined(value.length) && value.length <= maxLength }; };
 		module.greater.than = function(minValue) { return function(value) { return value > minValue }; };
 		module.less.than = function(maxValue) { return function(value) { return value < maxValue }; };
+		module.schema = function(spec) { return function(value) { return module.not.undefined(value) && spec.validate(value); } };
+
+		module.arrayOf = function(condition) {
+			return function(array) {
+				if(!module.array(array)) {
+					return false;
+				}
+
+				for(var i = 0; i < array.length; i++) {
+					if(!condition(array[i])) {
+						return false;
+					}
+				}
+
+				return true;
+			};
+		};
 
 		//TODO: Finish and write tests for the conditions below
-		module.model = function(modelValidator) { return function(value) { modelValidator.validate(value); } };
-		module.arrayOf = function() { return Object.prototype.toString.call(value) === '[object Array]'; };
-
 		function evaluateConditions(conditions, value) {
 			if(SchemaSpec.conditions.array(conditions)) {
 				for(var i = 0; i < conditions.length; i++) {
