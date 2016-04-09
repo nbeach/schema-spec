@@ -7,14 +7,13 @@
 		global.SchemaSpec = factory();
 	}
 }(this, function SchemaSpecFactory() {
+//TODO: cleanup documentation
 
 	/**
 	 * Creates a new schema specification object.
 	 * @Class SchemaSpec
-	 * @param {string} [name] - Name of the object type the spec will validate
 	 */
-	var SchemaSpec = function(name) {
-		this.name = name;
+	var SchemaSpec = function() {
 		this._propertyConditions = {};
 		this._universalConditions = [];
 	};
@@ -106,41 +105,40 @@
 
 
 	/**
-	 * SchemaSpec.conditions contains functions to be used for validation, and has methods to generate condition
-	 * functions for more complex validations
+	 * Contains condition functions to be used for validation
 	 * @memberof SchemaSpec
 	 * @static
 	 * @type {object}
-	 * @property {function} null
-	 * @property {function} not.null
-	 * @property {function} undefined
-	 * @property {function} not.undefined
-	 * @property {function} string
-	 * @property {function} not.string
-	 * @property {function} number
-	 * @property {function} not.number
-	 * @property {function} boolean
-	 * @property {function} not.boolean
-	 * @property {function} function
-	 * @property {function} not.function
-	 * @property {function} object
-	 * @property {function} not.object
-	 * @property {function} array
-	 * @property {function} not.array
-	 * @property {function} integer
-	 * @property {function} not.integer
-	 * @property {function} empty
-	 * @property {function} not.empty
-	 * @property {function} equal.to(value)
-	 * @property {function} not.equal.to(value)
-	 * @property {function} length(length)
-	 * @property {function} not.length(length)
-	 * @property {function} min.length(length)
-	 * @property {function} max.length(length)
-	 * @property {function} greater.than(value)
-	 * @property {function} less.than(value)
-	 * @property {function} arrayOf(condition)
-	 * @property {function} schema(SchemaSpec)
+	 * @property {function} null - Asserts the value is null
+	 * @property {function} undefined - Asserts the value is undefined
+	 * @property {function} string - Asserts the value is a string
+	 * @property {function} number - Asserts the value is a number
+	 * @property {function} boolean - Asserts the value is a boolean
+	 * @property {function} function - Asserts the value is a function
+	 * @property {function} object - Asserts the value is an object
+	 * @property {function} array - Asserts the value is an array
+	 * @property {function} integer - Asserts the value is an integer
+	 * @property {function} empty - Asserts the value is empty
+	 * @property {function} equal.to(value) - Asserts the value is equal to the provided value
+	 * @property {function} length(length) - Asserts the value length is equal to the provided length
+	 * @property {function} min.length(length) - Asserts the value is greater then or equal to the provided length
+	 * @property {function} max.length(length) - Asserts the value is less than or equal to the provided length
+	 * @property {function} greater.than(value) - Asserts the value is greater than the provided value
+	 * @property {function} less.than(value) - Asserts the value is less that the provided value
+	 * @property {function} arrayOf(conditions) - Asserts value is an array and all values match the provided condition(s)
+	 * @property {function} schema(SchemaSpec) - Asserts the value is an object and passes validation with the provided SchemaSpec
+	 * @property {function} not.null - Asserts the value is not null
+	 * @property {function} not.undefined - Asserts the value is not undefined
+	 * @property {function} not.string - Asserts the value is not a string
+	 * @property {function} not.number - Asserts the value is not a number
+	 * @property {function} not.boolean - Asserts the value is not a boolean
+	 * @property {function} not.function - Asserts the value is not a function
+	 * @property {function} not.object - Asserts the value is not an object
+	 * @property {function} not.array - Asserts the value is not an array
+	 * @property {function} not.integer - Asserts the value is not an integer
+	 * @property {function} not.empty - Asserts the value is not empty
+	 * @property {function} not.equal.to(value) - Asserts the value is not equal to the provided value
+	 * @property {function} not.length(length) - Asserts the value length is not the provided length
 	 */
 	SchemaSpec.conditions = {};
 	SchemaSpec.conditions.null = function(value) { return value === null; };
@@ -175,7 +173,7 @@
 	SchemaSpec.conditions.max = { length: function(maxLength) { return function(value) { return SchemaSpec.conditions.not.undefined(value.length) && value.length <= maxLength }; } };
 	SchemaSpec.conditions.greater = { than: function(minValue) { return function(value) { return value > minValue }; } };
 	SchemaSpec.conditions.less = { than: function(maxValue) { return function(value) { return value < maxValue }; } };
-	SchemaSpec.conditions.schema = function(spec) { return function(value) { return SchemaSpec.conditions.not.undefined(value) && spec.validate(value); } };
+	SchemaSpec.conditions.schema = function(spec) { return function(value) { return SchemaSpec.conditions.object(value) && spec.validate(value); } };
 
 	SchemaSpec.conditions.arrayOf = function(conditions) {
 		return function(array) {
