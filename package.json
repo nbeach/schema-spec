@@ -6,9 +6,9 @@
   "scripts": {
     "build": "gulp",
     "build:watch": "gulp watch",
-    "test": "mocha --recursive",
-    "coverage": "istanbul cover _mocha",
-    "test:watch": "mocha --recursive -w -R spec"
+    "test": "mocha --recursive -R spec",
+    "test:watch": "mocha --recursive -w -R min",
+    "coverage": "istanbul cover _mocha"
   },
   "repository": {
     "type": "git",
