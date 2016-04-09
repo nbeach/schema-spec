@@ -1,6 +1,6 @@
 {
   "name": "schema-spec",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A JavaScript library for defining object schemas and validating object against them.",
   "main": "dist/schema-spec.js",
   "scripts": {
