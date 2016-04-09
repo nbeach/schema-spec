@@ -2,9 +2,9 @@
 
 SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD, and supports CommonJS, AMD, and global based loading.
 
-[Examples](#Examples)
+[Examples](#examples)
 
-[Documentation](#Documentation)
+[Documentation](#documentation)
 
 SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-spec/blob/master/LICENSE).
 
