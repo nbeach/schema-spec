@@ -39,11 +39,6 @@
 		return true;
 	};
 
-	//TODO: implement this.
-	//Schemer.prototype.or = function(conditions) {
-	//	this.validations[currentProperty] = conditions;
-	//};
-
 	/**
 	 * Sets conditions to be applied to all specified properties in the object.
 	 * @memberof SchemaSpec
@@ -147,88 +142,85 @@
 	 * @property {function} arrayOf(condition)
 	 * @property {function} schema(SchemaSpec)
 	 */
-	SchemaSpec.conditions = new (function(){
-		var self = this;
+	SchemaSpec.conditions = {};
+	SchemaSpec.conditions.null = function(value) { return value === null; };
+	SchemaSpec.conditions.undefined = function(value) { return typeof value === "undefined"; };
+	SchemaSpec.conditions.strings = SchemaSpec.conditions.string = function(value) { return typeof value === "string"; };
+	SchemaSpec.conditions.numbers = SchemaSpec.conditions.number = function(value) { return typeof value === "number"; };
+	SchemaSpec.conditions.booleans = SchemaSpec.conditions.boolean = function(value) { return typeof value === "boolean"; };
+	SchemaSpec.conditions.functions = SchemaSpec.conditions.function = function(value) { return typeof value === "function"; };
+	SchemaSpec.conditions.objects = SchemaSpec.conditions.object = function(value) { return typeof value === "object"; };
+	SchemaSpec.conditions.arrays = SchemaSpec.conditions.array = function(value) { return Object.prototype.toString.call(value) === '[object Array]'; };
+	SchemaSpec.conditions.integers = SchemaSpec.conditions.integer = function(number) { return SchemaSpec.conditions.number(number) && (number % 1) === 0; };
+	SchemaSpec.conditions.empty = function(value) { return SchemaSpec.conditions.string(value) && value.length === 0; };
 
-		self.null = function(value) { return value === null; };
-		self.undefined = function(value) { return typeof value === "undefined"; };
-		self.strings = self.string = function(value) { return typeof value === "string"; };
-		self.numbers = self.number = function(value) { return typeof value === "number"; };
-		self.booleans = self.boolean = function(value) { return typeof value === "boolean"; };
-		self.functions = self.function = function(value) { return typeof value === "function"; };
-		self.objects = self.object = function(value) { return typeof value === "object"; };
-		self.arrays = self.array = function(value) { return Object.prototype.toString.call(value) === '[object Array]'; };
-		self.integers = self.integer = function(number) { return self.number(number) && (number % 1) === 0; };
-		self.empty = function(value) { return self.string(value) && value.length === 0; };
-
-		//Generate not validators for function that don't utilize currying
-		var notValidators = {};
-		for (var property in self) {
-			if (self.hasOwnProperty(property) && property !== 'not') {
-				(function(property) {
-					notValidators[property] = function(value) { return !self[property](value); };
-				})(property);
-			}
+	//Generate not validators for function that don't utilize currying
+	var notConditions = {};
+	for (var property in SchemaSpec.conditions) {
+		if (SchemaSpec.conditions.hasOwnProperty(property) && property !== 'not') {
+			(function(property) {
+				notConditions[property] = function(value) { return !SchemaSpec.conditions[property](value); };
+			})(property);
 		}
-		self.not = notValidators;
+	}
+	SchemaSpec.conditions.not = notConditions;
 
 
-		//Currying validators
-		self.length = function(length) { return function(value) { return self.not.undefined(value.length) && value.length === length }; };
-		self.not.length = function(length) { return function(value) { return self.not.undefined(value.length) && value.length !== length }; };
-		self.equal = { to: function(provided) { return function(value) { return value === provided }; } };
-		self.not.equal = { to: function(provided) { return function(value) { return value !== provided }; } };
-		self.min = { length: function(minLength) { return function(value) { return self.not.undefined(value.length) && value.length >= minLength }; } };
-		self.max = { length: function(maxLength) { return function(value) { return self.not.undefined(value.length) && value.length <= maxLength }; } };
-		self.greater = { than: function(minValue) { return function(value) { return value > minValue }; } };
-		self.less = { than: function(maxValue) { return function(value) { return value < maxValue }; } };
-		self.schema = function(spec) { return function(value) { return self.not.undefined(value) && spec.validate(value); } };
+	//Currying validators
+	SchemaSpec.conditions.length = function(length) { return function(value) { return SchemaSpec.conditions.not.undefined(value.length) && value.length === length }; };
+	SchemaSpec.conditions.not.length = function(length) { return function(value) { return SchemaSpec.conditions.not.undefined(value.length) && value.length !== length }; };
+	SchemaSpec.conditions.equal = { to: function(provided) { return function(value) { return value === provided }; } };
+	SchemaSpec.conditions.not.equal = { to: function(provided) { return function(value) { return value !== provided }; } };
+	SchemaSpec.conditions.min = { length: function(minLength) { return function(value) { return SchemaSpec.conditions.not.undefined(value.length) && value.length >= minLength }; } };
+	SchemaSpec.conditions.max = { length: function(maxLength) { return function(value) { return SchemaSpec.conditions.not.undefined(value.length) && value.length <= maxLength }; } };
+	SchemaSpec.conditions.greater = { than: function(minValue) { return function(value) { return value > minValue }; } };
+	SchemaSpec.conditions.less = { than: function(maxValue) { return function(value) { return value < maxValue }; } };
+	SchemaSpec.conditions.schema = function(spec) { return function(value) { return SchemaSpec.conditions.not.undefined(value) && spec.validate(value); } };
 
-		self.arrayOf = function(conditions) {
-			return function(array) {
-				if(!self.array(array)) {
+	SchemaSpec.conditions.arrayOf = function(conditions) {
+		return function(array) {
+			if(!SchemaSpec.conditions.array(array)) {
+				return false;
+			}
+
+			if(!SchemaSpec.conditions.array(conditions)) {
+				conditions = [conditions];
+			}
+
+			for(var i = 0; i < array.length; i++) {
+				for(var x = 0; x < conditions.length; x++)
+				if(!conditions[x](array[i])) {
 					return false;
 				}
+			}
 
-				if(!self.array(conditions)) {
-					conditions = [conditions];
-				}
-
-				for(var i = 0; i < array.length; i++) {
-					for(var x = 0; x < conditions.length; x++)
-					if(!conditions[x](array[i])) {
-						return false;
-					}
-				}
-
-				return true;
-			};
+			return true;
 		};
+	};
 
-		//TODO: Finish and write tests for the conditions below
-		function evaluateConditions(conditions, value) {
-			if(SchemaSpec.conditions.array(conditions)) {
-				for(var i = 0; i < conditions.length; i++) {
-					if(conditions[i](value) === false) {
-						return false;
-					}
-				}
+	function evaluateConditions(conditions, value) {
+		if(!SchemaSpec.conditions.array(conditions)) {
+			conditions = [conditions];
+		}
 
-				return true;
-			} else {
-				return conditions(value);
+		for(var i = 0; i < conditions.length; i++) {
+			if(conditions[i](value) === false) {
+				return false;
 			}
 		}
 
-		self.or = function(conditionsA, conditionsB) {
-			return function(value) {
-				return evaluateConditions(conditionsA, value) || evaluateConditions(conditionsB, value);
+		return true;
+	}
+
+	SchemaSpec.conditions.either = function(conditionsA) {
+		return {
+			or: function(conditionsB) {
+				return function(value) {
+					return evaluateConditions(conditionsA, value) || evaluateConditions(conditionsB, value);
+				};
 			}
 		};
-
-
-	})();
-
+	};
 
 	return SchemaSpec;
 }));
