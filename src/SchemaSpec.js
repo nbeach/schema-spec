@@ -8,6 +8,11 @@
 	}
 }(this, function SchemaSpecFactory() {
 
+	/**
+	 * Creates a new schema specification object.
+	 * @Class SchemaSpec
+	 * @param {string} [name] - Name of the object type the spec will validate
+	 */
 	var SchemaSpec = function(name) {
 		this.name = name;
 		this._propertyConditions = {};
@@ -24,11 +29,39 @@
 		return list;
 	};
 
+	SchemaSpec.prototype._validateValue = function(propertyConditions, value) {
+		for(var property in propertyConditions) {
+			if (propertyConditions.hasOwnProperty(property) && propertyConditions[property](value) === false) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	//TODO: implement this.
+	//Schemer.prototype.or = function(conditions) {
+	//	this.validations[currentProperty] = conditions;
+	//};
+
+	/**
+	 * Sets conditions to be applied to all specified properties in the object.
+	 * @memberof SchemaSpec
+	 * @param {function|Array<function>} conditions - A single or array of conditions to apply
+	 * @returns {SchemaSpec} Returns a reference to the SchemaSpec object to support builder style calls
+	 */
 	SchemaSpec.prototype.all = function(conditions) {
 		this._universalConditions = this._addConditions(this._universalConditions, conditions);
 		return this;
 	};
 
+	/**
+	 * Sets conditions to be applied to a property.
+	 * @memberof SchemaSpec
+	 * @param {string} name - The name of the property
+	 * @param {function|Array<function>} [conditions] - A single or array of conditions to apply
+	 * @returns {SchemaSpec} Returns a reference to the SchemaSpec object to support builder style calls
+	 */
 	SchemaSpec.prototype.property = function(name, conditions) {
 		if(SchemaSpec.conditions.undefined(this._propertyConditions[name])) {
 			this._propertyConditions[name] = [];
@@ -41,12 +74,23 @@
 		return this;
 	};
 
-	//TODO: implement this.
-	//Schemer.prototype.or = function(conditions) {
-	//	this.validations[currentProperty] = conditions;
-	//};
 
+	/**
+	 * Validates an object against the schema spec.
+	 * @memberof SchemaSpec
+	 * @param {object} object - The object to be validated
+	 * @returns {SchemaSpec} Returns true if the object passes all validations, false if at least one validation fails.
+	 */
 	SchemaSpec.prototype.validate = function(object) {
+
+		if(!SchemaSpec.conditions.object(object)) {
+			throw new Error('Value to validate is not an object');
+		}
+
+		if(Object.keys(this._propertyConditions).length === 0) {
+			throw new Error('No object properties specified');
+		}
+
 		for (var propertyName in this._propertyConditions) {
 
 			for(var i = 0; i  < this._universalConditions.length; i++) {
@@ -63,66 +107,96 @@
 		return true;
 	};
 
-	SchemaSpec.prototype._validateValue = function(propertyConditions, value) {
-		for(var property in propertyConditions) {
-			if (propertyConditions.hasOwnProperty(property) && propertyConditions[property](value) === false) {
-				return false;
-			}
-		}
-
-		return true;
-	};
 
 
 
+	/**
+	 * SchemaSpec.conditions contains functions to be used for validation, and has methods to generate condition
+	 * functions for more complex validations
+	 * @memberof SchemaSpec
+	 * @static
+	 * @type {object}
+	 * @property {function} null
+	 * @property {function} not.null
+	 * @property {function} undefined
+	 * @property {function} not.undefined
+	 * @property {function} string
+	 * @property {function} not.string
+	 * @property {function} number
+	 * @property {function} not.number
+	 * @property {function} boolean
+	 * @property {function} not.boolean
+	 * @property {function} function
+	 * @property {function} not.function
+	 * @property {function} object
+	 * @property {function} not.object
+	 * @property {function} array
+	 * @property {function} not.array
+	 * @property {function} integer
+	 * @property {function} not.integer
+	 * @property {function} empty
+	 * @property {function} not.empty
+	 * @property {function} equal.to(value)
+	 * @property {function} not.equal.to(value)
+	 * @property {function} length(length)
+	 * @property {function} not.length(length)
+	 * @property {function} min.length(length)
+	 * @property {function} max.length(length)
+	 * @property {function} greater.than(value)
+	 * @property {function} less.than(value)
+	 * @property {function} arrayOf(condition)
+	 * @property {function} schema(SchemaSpec)
+	 */
+	SchemaSpec.conditions = new (function(){
+		var self = this;
 
-	SchemaSpec.conditions = (function(){
-		var module = { min: {}, max: {}, not: {}, greater: {}, less: {} };
-
-		module.null = function(value) { return value === null; };
-		module.undefined = function(value) { return typeof value === "undefined"; };
-		module.strings = module.string = function(value) { return typeof value === "string"; };
-		module.numbers = module.number = function(value) { return typeof value === "number"; };
-		module.booleans = module.boolean = function(value) { return typeof value === "boolean"; };
-		module.functions = module.function = function(value) { return typeof value === "function"; };
-		module.objects = module.object = function(value) { return typeof value === "object"; };
-		module.arrays = module.array = function(value) { return Object.prototype.toString.call(value) === '[object Array]'; };
-
-		module.integers = module.integer = function(number) { return module.number(number) && (number % 1) === 0; };
-		module.empty = function(value) { return module.string(value) && value.length === 0; };
+		self.null = function(value) { return value === null; };
+		self.undefined = function(value) { return typeof value === "undefined"; };
+		self.strings = self.string = function(value) { return typeof value === "string"; };
+		self.numbers = self.number = function(value) { return typeof value === "number"; };
+		self.booleans = self.boolean = function(value) { return typeof value === "boolean"; };
+		self.functions = self.function = function(value) { return typeof value === "function"; };
+		self.objects = self.object = function(value) { return typeof value === "object"; };
+		self.arrays = self.array = function(value) { return Object.prototype.toString.call(value) === '[object Array]'; };
+		self.integers = self.integer = function(number) { return self.number(number) && (number % 1) === 0; };
+		self.empty = function(value) { return self.string(value) && value.length === 0; };
 
 		//Generate not validators for function that don't utilize currying
 		var notValidators = {};
-		for (var property in module) {
-			if (module.hasOwnProperty(property) && property !== 'not') {
+		for (var property in self) {
+			if (self.hasOwnProperty(property) && property !== 'not') {
 				(function(property) {
-					notValidators[property] = function(value) { return !module[property](value); };
+					notValidators[property] = function(value) { return !self[property](value); };
 				})(property);
 			}
 		}
-		module.not = notValidators;
+		self.not = notValidators;
 
-		//Add currying validators
-		module.length = function(length) { return function(value) { return module.not.undefined(value.length) && value.length === length }; };
-		module.not.length = function(length) { return function(value) { return module.not.undefined(value.length) && value.length !== length }; };
-		module.equal = {};
-		module.equal.to = function(provided) { return function(value) { return value === provided }; };
-		module.not.equal = {};
-		module.not.equal.to = function(provided) { return function(value) { return value !== provided }; };
-		module.min.length = function(minLength) { return function(value) { return module.not.undefined(value.length) && value.length >= minLength }; };
-		module.max.length = function(maxLength) { return function(value) { return module.not.undefined(value.length) && value.length <= maxLength }; };
-		module.greater.than = function(minValue) { return function(value) { return value > minValue }; };
-		module.less.than = function(maxValue) { return function(value) { return value < maxValue }; };
-		module.schema = function(spec) { return function(value) { return module.not.undefined(value) && spec.validate(value); } };
 
-		module.arrayOf = function(condition) {
+		//Currying validators
+		self.length = function(length) { return function(value) { return self.not.undefined(value.length) && value.length === length }; };
+		self.not.length = function(length) { return function(value) { return self.not.undefined(value.length) && value.length !== length }; };
+		self.equal = { to: function(provided) { return function(value) { return value === provided }; } };
+		self.not.equal = { to: function(provided) { return function(value) { return value !== provided }; } };
+		self.min = { length: function(minLength) { return function(value) { return self.not.undefined(value.length) && value.length >= minLength }; } };
+		self.max = { length: function(maxLength) { return function(value) { return self.not.undefined(value.length) && value.length <= maxLength }; } };
+		self.greater = { than: function(minValue) { return function(value) { return value > minValue }; } };
+		self.less = { than: function(maxValue) { return function(value) { return value < maxValue }; } };
+		self.schema = function(spec) { return function(value) { return self.not.undefined(value) && spec.validate(value); } };
+
+		self.arrayOf = function(conditions) {
 			return function(array) {
-				if(!module.array(array)) {
+				if(!self.array(array)) {
 					return false;
 				}
 
+				if(!self.array(conditions)) {
+					conditions = [conditions];
+				}
+
 				for(var i = 0; i < array.length; i++) {
-					if(!condition(array[i])) {
+					for(var x = 0; x < conditions.length; x++)
+					if(!conditions[x](array[i])) {
 						return false;
 					}
 				}
@@ -146,22 +220,15 @@
 			}
 		}
 
-		module._or = function(conditionsA, conditionsB) {
+		self.or = function(conditionsA, conditionsB) {
 			return function(value) {
 				return evaluateConditions(conditionsA, value) || evaluateConditions(conditionsB, value);
 			}
 		};
 
-		module._and = function(conditionsA, conditionsB) {
-			return function(value) {
-				return evaluateConditions(conditionsA, value) && evaluateConditions(conditionsB, value);
-			}
-		};
 
-		return module;
 	})();
 
 
 	return SchemaSpec;
-
 }));

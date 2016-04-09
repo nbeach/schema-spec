@@ -10,9 +10,67 @@ describe("SchemaSpec", function() {
     alwaysFails = function() { return false; };
   });
 
-  describe("validates objects with", function() {
+  describe('when there are multiple calls to', function() {
 
-    describe("single conditions for a property and returns", function() {
+    describe('property with the same property name', function() {
+
+      it('appends single conditions', function() {
+        var spec = new SchemaSpec().property('property', alwaysPasses);
+        expect(spec.validate({})).to.equal(true);
+
+        spec.property('property', alwaysFails);
+        expect(spec.validate({})).to.equal(false);
+      });
+
+      it('appends arrays of conditions', function() {
+        var spec = new SchemaSpec().property('property', [alwaysPasses]);
+        expect(spec.validate({})).to.equal(true);
+
+        spec.property('property', [alwaysPasses, alwaysFails]);
+        expect(spec.validate({})).to.equal(false);
+      });
+
+    });
+
+    describe('all', function() {
+
+      it('appends single conditions', function() {
+        var spec = new SchemaSpec().property('property').all(alwaysPasses);
+        expect(spec.validate({})).to.equal(true);
+
+        spec.all(alwaysFails);
+        expect(spec.validate({})).to.equal(false);
+      });
+
+      it('appends arrays of conditions', function() {
+        var spec = new SchemaSpec().property('property').all([alwaysPasses]);
+        expect(spec.validate({})).to.equal(true);
+
+        spec.all([alwaysPasses, alwaysFails]);
+        expect(spec.validate({})).to.equal(false);
+      });
+    });
+
+  });
+
+
+  describe("validates objects", function() {
+
+    describe('and throws an error if', function() {
+
+      it('the provided value is not an object', function() {
+        var spec = new SchemaSpec();
+        expect(spec.validate.bind(spec, 'abc')).to.throw(Error);
+      });
+
+      it('no properties have been specified', function() {
+        var spec = new SchemaSpec();
+        expect(spec.validate.bind(spec, {})).to.throw(Error);
+      });
+
+    });
+
+    describe("with single conditions for a property and returns", function() {
 
       it("true when the condition passes", function () {
         var spec = new SchemaSpec()
@@ -30,7 +88,7 @@ describe("SchemaSpec", function() {
 
     });
 
-    describe("multiple conditions for a property and returns", function() {
+    describe("with multiple conditions for a property and returns", function() {
 
       it("true when all conditions pass", function () {
         var spec = new SchemaSpec()
@@ -48,7 +106,7 @@ describe("SchemaSpec", function() {
 
     });
 
-    describe("single conditions for all properties and returns", function() {
+    describe("with single conditions for all properties and returns", function() {
 
       it("true when the condition passes", function () {
         var spec = new SchemaSpec()
@@ -68,7 +126,7 @@ describe("SchemaSpec", function() {
 
     });
 
-    describe("multiple conditions for all properties and returns", function() {
+    describe("with multiple conditions for all properties and returns", function() {
 
       it("true when all conditions pass", function () {
         var spec = new SchemaSpec()
@@ -88,7 +146,7 @@ describe("SchemaSpec", function() {
 
     });
 
-    describe("multiple properties and returns", function() {
+    describe("with multiple properties and returns", function() {
 
       it("true when all properties conditions pass", function () {
         var spec = new SchemaSpec()
@@ -322,29 +380,47 @@ describe("SchemaSpec", function() {
     });
 
 
-    describe('arrayOf returns', function() {
+    describe('array.of', function() {
       var arrayObj;
 
       beforeEach(function() {
         arrayObj = {
           arrayA: [1, 2, 3],
-          arrayB: [1, '2', 3]
+          arrayB: [1, '2', 3],
+          arrayC: [1, 2.22, 3]
         };
 
       });
 
-      it('true when the array contains only values matching the provided condition', function() {
-        var result = spec.property('arrayA', is.arrayOf(is.number)).validate(arrayObj);
-        expect(result).to.equal(true);
+      describe('accepts single conditions', function() {
+
+        it('and returns true when the array contains only values matching the provided condition', function() {
+          var result = spec.property('arrayA', is.arrayOf(is.number)).validate(arrayObj);
+          expect(result).to.equal(true);
+        });
+
+        it('and returns false when the array contains at least one value not matching the provided condition', function() {
+          var result = spec.property('arrayB', is.arrayOf(is.number)).validate(arrayObj);
+          expect(result).to.equal(false);
+        });
+
       });
 
-      it('false when the array contains at least one value not matching the provided condition', function() {
-        var result = spec.property('arrayB', is.arrayOf(is.number)).validate(arrayObj);
-        expect(result).to.equal(false);
+      describe('accepts arrays of conditions', function() {
+
+        it('and returns true when the array contains only values matching the provided conditions', function() {
+          var result = spec.property('arrayA', is.arrayOf([is.number, is.integer])).validate(arrayObj);
+          expect(result).to.equal(true);
+        });
+
+        it('and returns false when the array contains at least one value not matching the provided conditions', function() {
+          var result = spec.property('arrayC', is.arrayOf([is.number, is.integer])).validate(arrayObj);
+          expect(result).to.equal(false);
+        });
+
       });
 
     });
-
 
   });
 
