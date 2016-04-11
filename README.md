@@ -1,4 +1,5 @@
 ## SchemaSpec
+![Build Status](https://travis-ci.org/nbeach/schema-spec.svg?branch=master)
 
 SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD, and supports CommonJS, AMD, and global based loading.
 
