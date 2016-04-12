@@ -23,6 +23,7 @@
   "keywords": ["validation", "schema", "specification", "object", "spec", "valid"],
   "devDependencies": {
     "chai": "^3.5.0",
+    "coveralls": "^2.11.9",
     "gulp": "^3.9.1",
     "gulp-add-src": "^0.2.0",
     "gulp-concat": "^2.6.0",
