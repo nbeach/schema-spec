@@ -1,5 +1,16 @@
+[david-url]: https://david-dm.org/nbeach/schema-spec
+[david-image]: https://img.shields.io/david/nbeach/schema-spec.svg
+[david-dev-url]: https://david-dm.org/nbeach/schema-spec#info=devDependencies
+[david-dev-image]: https://david-dm.org/nbeach/schema-spec/dev-status.svg
+[david-peer-url]: https://david-dm.org/nbeach/schema-spec#info=peerDependencies
+[david-peer-image]: https://david-dm.org/nbeach/schema-spec/peer-status.svg
+[coveralls-url]: https://coveralls.io/r/nbeach/schema-spec/
+[coveralls-image]: https://img.shields.io/coveralls/nbeach/schema-spec.svg
+
 ## SchemaSpec
-![Build Status](https://travis-ci.org/nbeach/schema-spec.svg?branch=master)
+[![npm version](https://badge.fury.io/js/schema-spec.svg)](https://badge.fury.io/js/schema-spec) ![Build Status](https://travis-ci.org/nbeach/schema-spec.svg?branch=master) [![Coverage Status][coveralls-image]][coveralls-url]
+
+[![Dependency Status][david-image]][david-url] [![devDependency Status][david-dev-image]][david-dev-url] [![peerDependency Status][david-peer-image]][david-peer-url]
 
 SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD, and supports CommonJS, AMD, and global based loading.
 
@@ -23,7 +34,6 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Multiple conditions per property
-    var SchemaSpec = require('schema-spec');
     var is = SchemaSpec.validators;
 
     var spec = new SchemaSpec()
@@ -32,7 +42,6 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Applying conditions to all properties
-    var SchemaSpec = require('schema-spec');
     var is = SchemaSpec.validators, are = is
 
     var spec = new SchemaSpec()
@@ -42,7 +51,6 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Validating nested objects
-    var SchemaSpec = require('schema-spec');
     var is = SchemaSpec.validators;
 
     var accountSpec = new SchemaSpec()
