@@ -9,8 +9,7 @@
 
 ## SchemaSpec
 [![npm version](https://badge.fury.io/js/schema-spec.svg)](https://badge.fury.io/js/schema-spec) ![Build Status](https://travis-ci.org/nbeach/schema-spec.svg?branch=master) [![Coverage Status][coveralls-image]][coveralls-url]
-
-[![Dependency Status][david-image]][david-url] [![devDependency Status][david-dev-image]][david-dev-url] [![peerDependency Status][david-peer-image]][david-peer-url]
+[![Dependency Status][david-image]][david-url] [![devDependency Status][david-dev-image]][david-dev-url]
 
 SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD, and supports CommonJS, AMD, and global based loading.
 
