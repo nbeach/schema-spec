@@ -11,7 +11,7 @@
 [![npm version](https://badge.fury.io/js/schema-spec.svg)](https://badge.fury.io/js/schema-spec) ![Build Status](https://travis-ci.org/nbeach/schema-spec.svg?branch=master) [![Coverage Status][coveralls-image]][coveralls-url]
 [![Dependency Status][david-image]][david-url] [![devDependency Status][david-dev-image]][david-dev-url]
 
-SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD, and supports CommonJS, AMD, and global based loading.
+SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD for CommonJS, AMD, and global based loading support.
 
 * [Examples](#examples)
 * [Documentation](#documentation)
@@ -33,6 +33,8 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Multiple conditions per property
+Multiple conditions can be specified as an array.
+
     var is = SchemaSpec.conditions;
 
     var spec = new SchemaSpec()
@@ -41,6 +43,8 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Applying conditions to all properties
+Conditions can be applied to all specified properties using .all().
+
     var is = SchemaSpec.conditions, are = is
 
     var spec = new SchemaSpec()
@@ -50,6 +54,8 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Validating nested objects
+Object hierarchies can be validated by using the "schema" condition to validate properties against SchemaSpecs.
+
     var is = SchemaSpec.conditions;
 
     var accountSpec = new SchemaSpec()
@@ -60,9 +66,17 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
         .property("name", is.string)
         .property("account", is.schema(accountSpec));
 
+#### Or Condition
+Using either().or() you can validate a property against two conditions (or sets of conditions) using a logical or. In the case below the object would be considered valid is the id property is null, or if it is an integer that is greater than or equal to zero.
+
+    var is = SchemaSpec.conditions;
+
+    var spec = new SchemaSpec()
+        .property("id", is.either(is.null).or([is.integer, is.min.value(0)]));
+
 #### Custom conditions
 
-You can easily create your own validation conditions. Conditions are just functions that take a single value and return true if the value meets the condition or false if it fails.
+You can easily create your own validation conditions. Conditions are just functions that take a single property value and return true if the value meets the condition or false if it fails.
 
     var isNamedJohn = function(value) {
         return value === 'John';

@@ -127,6 +127,7 @@
 	 * @property {function} less.than(value) - Asserts the value is less that the provided value
 	 * @property {function} arrayOf(conditions) - Asserts value is an array and all values match the provided condition(s)
 	 * @property {function} schema(SchemaSpec) - Asserts the value is an object and passes validation with the provided SchemaSpec
+	 * @property {function} either(conditionA).or(conditionB) - Asserts either conditionA passes, or conditionB passes
 	 * @property {function} not.null - Asserts the value is not null
 	 * @property {function} not.undefined - Asserts the value is not undefined
 	 * @property {function} not.string - Asserts the value is not a string
