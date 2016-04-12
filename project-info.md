@@ -23,7 +23,7 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 #### Basic usage
     var SchemaSpec = require('schema-spec');
-    var is = SchemaSpec.validators
+    var is = SchemaSpec.conditions
 
     var spec = new SchemaSpec()
         .property("id", is.number)
@@ -33,7 +33,7 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Multiple conditions per property
-    var is = SchemaSpec.validators;
+    var is = SchemaSpec.conditions;
 
     var spec = new SchemaSpec()
         .property("id", [is.number, is.min.value(0)])
@@ -41,7 +41,7 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Applying conditions to all properties
-    var is = SchemaSpec.validators, are = is
+    var is = SchemaSpec.conditions, are = is
 
     var spec = new SchemaSpec()
         .property("id")
@@ -50,7 +50,7 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
 
 
 #### Validating nested objects
-    var is = SchemaSpec.validators;
+    var is = SchemaSpec.conditions;
 
     var accountSpec = new SchemaSpec()
         .property("accountNumber", is.integer);
