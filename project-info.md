@@ -60,4 +60,15 @@ SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-
         .property("name", is.string)
         .property("account", is.schema(accountSpec));
 
+#### Custom conditions
+
+You can easily create your own validation conditions. Conditions are just functions that take a single value and return true if the value meets the condition or false if it fails.
+
+    var isNamedJohn = function(value) {
+        return value === 'John';
+    }
+
+    var spec = new SchemaSpec().property("name", isJohn);
+
+
 ## Documentation
