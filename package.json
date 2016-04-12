@@ -8,8 +8,8 @@
     "build:watch": "gulp watch",
     "test": "mocha --recursive -R spec",
     "test:watch": "mocha --recursive -w -R min",
+    "ci-test": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
     "coverage": "istanbul cover _mocha",
-    "ci-coverage": "istanbul cover _mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage"
   },
   "repository": {
     "type": "git",
