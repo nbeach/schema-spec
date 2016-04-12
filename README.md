@@ -82,7 +82,7 @@ You can easily create your own validation conditions. Conditions are just functi
         return value === 'John';
     }
 
-    var spec = new SchemaSpec().property("name", isJohn);
+    var spec = new SchemaSpec().property("name", isNamedJohn);
 
 
 ## Documentation

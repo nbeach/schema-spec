@@ -11,10 +11,7 @@
 [![npm version](https://badge.fury.io/js/schema-spec.svg)](https://badge.fury.io/js/schema-spec) ![Build Status](https://travis-ci.org/nbeach/schema-spec.svg?branch=master) [![Coverage Status][coveralls-image]][coveralls-url]
 [![Dependency Status][david-image]][david-url] [![devDependency Status][david-dev-image]][david-dev-url]
 
-SchemaSpec is a JavaScript library for defining object schemas and validating object against them. It implements UMD for CommonJS, AMD, and global based loading support.
-
-* [Examples](#examples)
-* [Documentation](#documentation)
+SchemaSpec is a JS library for defining object schemas and validating objects against them. It implements UMD for CommonJS, AMD, and global based loading support.
 
 SchemaSpec is released under the [MIT license](https://github.com/nbeach/schema-spec/blob/master/LICENSE).
 
@@ -82,7 +79,7 @@ You can easily create your own validation conditions. Conditions are just functi
         return value === 'John';
     }
 
-    var spec = new SchemaSpec().property("name", isJohn);
+    var spec = new SchemaSpec().property("name", isNamedJohn);
 
 
 ## Documentation
